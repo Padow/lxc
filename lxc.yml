@@ -1,0 +1,33 @@
+tosca_definitions_version: alien_dsl_1_3_0
+description: LXC component
+template_name: lxc-type
+template_version: 1.0.0-SNAPSHOT
+template_author: FastConnect
+
+imports:
+  - "tosca-normative-types:1.0.0-ALIEN12"
+
+node_types:
+  alien.nodes.Lxc:
+    derived_from: tosca.nodes.SoftwareComponent
+    description: >
+      The TOSCA LXC type represent an LXC component that can be run by
+      a TOSCA compute node type.
+    tags:
+      icon: /images/lxc.png
+    attributes:
+      IP_List: { get_operation_output: [ SELF, Standard, start, IP_LIST ] }
+    properties:
+      max:
+        type: integer
+        required: true
+        default: 10
+        description: number of desired containers
+    interfaces:
+      Standard:
+        create:
+          implementation: scripts/create.sh
+        start:
+          inputs:
+            MAX: { get_property: [SELF, max] }
+          implementation: scripts/start.sh
