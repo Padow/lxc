@@ -12,7 +12,7 @@ node_types:
     derived_from: tosca.nodes.SoftwareComponent
     description: >
       The TOSCA LXC type represent an LXC component that can be run by
-      a TOSCA compute node type.
+      a TOSCA compute node type runing Ubuntu.
     tags:
       icon: /images/lxc.png
     attributes:
@@ -23,6 +23,11 @@ node_types:
         required: true
         default: 10
         description: number of desired containers
+      hostpool_endpoint:
+        type: string
+        required: true
+        default: http://172.16.0.2:8080/hosts
+        description: endpoint of the hostpool plugin (default manager private IP)
     interfaces:
       Standard:
         create:
@@ -30,4 +35,6 @@ node_types:
         start:
           inputs:
             MAX: { get_property: [SELF, max] }
+            HOST_PRIVATE_IP: {get_attribute: [HOST, ip_address]}
+            HOSTPOOL_ENDPOINT: { get_property: [SELF, hostpool_endpoint] }
           implementation: scripts/start.sh
