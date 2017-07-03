@@ -11,8 +11,7 @@ ADD_IP_TABLE(){
 }
 
 ADD_TO_HOSTPOOL(){
-  JSON='{"default": {"os": "linux", "endpoint": {"port": '$1', "protocol": "ssh"}}, "hosts":[{"name": "ubuntu_'$i'", "endpoint":{"ip": "'$2'"},"credentials":{"username":"ubuntu","key":"ubuntu"}}]}'
-  curl -v -X POST -H "Content-Type: application/json" -d $JSON  $3
+  curl -v -X POST -H "Content-Type: application/json" -d '{"default": {"os": "linux", "endpoint": {"port": '$1', "protocol": "ssh"}}, "hosts":[{"name": "ubuntu_'$4'", "endpoint":{"ip": "'$2'"},"credentials":{"username":"ubuntu","key":"ubuntu"}}]}' $3
 }
 
 RETRY(){
@@ -28,7 +27,7 @@ RETRY(){
         MAPPING=$HOST_PRIVATE_IP:$2
         ARRAY+=($MAPPING)
         ADD_IP_TABLE $IP $MAP_PORT
-        ADD_TO_HOSTPOOL $MAP_PORT $HOST_PRIVATE_IP $HOSTPOOL_ENDPOINT
+        ADD_TO_HOSTPOOL $MAP_PORT $HOST_PRIVATE_IP $HOSTPOOL_ENDPOINT $i
         TRIES=20
     fi
     sleep 2
