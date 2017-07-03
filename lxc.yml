@@ -28,10 +28,18 @@ node_types:
         required: true
         default: http://172.16.0.2:8080/hosts
         description: endpoint of the hostpool plugin (default manager private IP)
+      key_pem:
+        type: string
+        required: true
+        description: used cloudify manager key.pem
     interfaces:
       Standard:
         create:
           implementation: scripts/create.sh
+        configure:
+          inputs:
+            KEY_PEM: { get_property: [SELF, key_pem] }
+          implementation: scripts/configure.sh
         start:
           inputs:
             MAX: { get_property: [SELF, max] }
