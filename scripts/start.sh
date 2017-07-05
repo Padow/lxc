@@ -2,7 +2,7 @@
 cd /root
 ARRAY=()
 for (( i = 0; i < $MAX; i++ )); do
-    lxc-create -n ubuntu_$i -t /usr/share/lxc/templates/lxc-ubuntu -- --packages "curl,python"
+    lxc-create -n ubuntu_$i -t /usr/share/lxc/templates/lxc-ubuntu -- --packages "wget,curl,python"
     lxc-start -n ubuntu_$i -d
 done
 
@@ -12,7 +12,7 @@ ADD_IP_TABLE(){
 
 ADD_TO_HOSTPOOL(){
   KEY_DATA=$(awk 'NF {sub(/\r/, ""); printf "%s\\n",$0;}' key.pem)
-  curl -v -X POST -H "Content-Type: application/json" -d '{"default": {"os": "linux", "endpoint": {"port": '$1', "protocol": "ssh"}}, "hosts":[{"name": "ubuntu_'$4'", "endpoint":{"ip": "'$2'"},"credentials":{"username":"ubuntu","key":"'"$KEY_DATA"'"}}]}' $3
+  curl -v -X POST -H "Content-Type: application/json" -d '{"default": {"os": "linux", "endpoint": {"port": '$1', "protocol": "ssh"},"credentials": {"username": "ubuntu","password":"ubuntu"}}, "hosts":[{"name": "ubuntu_'$4'", "endpoint":{"ip": "'$2'"},"credentials":{"username":"ubuntu","password":"ubuntu","key":"'"$KEY_DATA"'"}}]}' $3
 }
 
 RETRY(){
@@ -25,7 +25,6 @@ RETRY(){
     if [ "$IP" == "" ]; then
         echo "No IP sets rety "$TRIES
     else
-
         sshpass -p ubuntu ssh -o "StrictHostKeyChecking no" ubuntu@$IP 'exit'
         sshpass -p ubuntu scp -r .ssh/ ubuntu@$IP:/home/ubuntu/.ssh
         MAPPING=$HOST_PRIVATE_IP:$2
