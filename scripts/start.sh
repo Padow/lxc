@@ -27,6 +27,8 @@ RETRY(){
     else
         sshpass -p ubuntu ssh -o "StrictHostKeyChecking no" ubuntu@$IP 'exit'
         sshpass -p ubuntu scp -r .ssh/ ubuntu@$IP:/home/ubuntu/.ssh
+        sshpass -p ubuntu scp sudoers ubuntu@$IP:/home/ubuntu/
+        sshpass -p ubuntu ssh -o "StrictHostKeyChecking no" ubuntu@$IP 'echo  "ubuntu" | sudo -S cp /home/ubuntu/sudoers /etc && exit'
         MAPPING=$HOST_PRIVATE_IP:$2
         ARRAY+=($MAPPING)
         ADD_IP_TABLE $IP $MAP_PORT
