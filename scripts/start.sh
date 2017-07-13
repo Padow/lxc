@@ -12,7 +12,7 @@ ADD_IP_TABLE(){
 
 ADD_TO_HOSTPOOL(){
   KEY_DATA=$(awk 'NF {sub(/\r/, ""); printf "%s\\n",$0;}' key.pem)
-  curl -v -X POST -H "Content-Type: application/json" -d '{"default": {"os": "linux", "endpoint": {"port": '$1', "protocol": "ssh"},"credentials": {"username": "ubuntu","password":"ubuntu"}}, "hosts":[{"name": "ubuntu_'$4'", "endpoint":{"ip": "'$2'"},"credentials":{"username":"ubuntu","password":"ubuntu","key":"'"$KEY_DATA"'"}}]}' $3
+  curl -v -X POST -H "Content-Type: application/json" -d '{"default": {"os": "linux", "endpoint": {"port": '$1', "protocol": "ssh"}, "tags": ["'$2'"], "credentials": {"username": "ubuntu","password":"ubuntu"}}, "hosts":[{"name": "ubuntu_'$4'", "endpoint":{"ip": "'$2'"},"credentials":{"username":"ubuntu","password":"ubuntu","key":"'"$KEY_DATA"'"}}]}' $3/hosts
 }
 
 RETRY(){
